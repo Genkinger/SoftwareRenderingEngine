@@ -128,7 +128,6 @@ int main(){
         {
             ScopeTimer t("Frame",TimerResolution::MILLI);
 
-
             r.Begin(RenderMode::TRIANGLES);
 
             r.Clear(0, 0, 0);
