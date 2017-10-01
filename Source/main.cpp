@@ -15,37 +15,16 @@
 #define WIDTH 640
 #define HEIGHT 480
 
-/*
-void apply(mat4_t matrix, float* buffer, float* out, int cpe, int ecount){
 
-    for(int i = 0; i < ecount; i++){
-        vec4f_t v = vec4f(buffer[i*cpe],buffer[i*cpe + 1], buffer[i * cpe + 2], 1);
-        vec4f_t res = vec4f_multiply_mat4(v,matrix);
-
-        out[i*cpe] = res.x;
-        out[i*cpe+1] = res.y;
-        out[i*cpe+2] = res.z;
-    }
-
-}
-
-
-void apply_div(mat4_t matrix, float* buffer, float* out, int cpe, int ecount){
-
-    for(int i = 0; i < ecount; i++){
-        vec4f_t v = vec4f(buffer[i*cpe],buffer[i*cpe + 1], buffer[i * cpe + 2], 1);
-        vec4f_t res = vec4f_multiply_mat4(v,matrix);
-        out[i*cpe] = res.x /res.w;
-        out[i*cpe+1] = res.y / res.w;
-        out[i*cpe+2] = res.z / res.w;
-    }
-
-}
-*/
 void apply_div(Matrix<4,float> matrix, float* buffer, float* out, int cpe, int ecount){
 
     for(int i = 0; i < ecount; i++){
-        Vec4f v = {buffer[i*cpe],buffer[i*cpe + 1], buffer[i * cpe + 2], 1};
+        Vec4f v = {buffer[i*cpe],
+                   buffer[i*cpe + 1],
+                   buffer[i * cpe + 2],
+                   1
+        };
+
         Vec4f res = matrix * v;
         out[i*cpe] = res[0] /res[3];
         out[i*cpe+1] = res[1] / res[3];
@@ -154,13 +133,6 @@ int main(){
 
             r.Clear(0, 0, 0);
 
-            /*r.Color3(1,0,0);
-            r.Vertex2(-0.5,-0.5);
-            r.Color3(0,1,0);
-            r.Vertex2(-0.5,0.5);
-            r.Color3(0,0,1);
-            r.Vertex2(0.5,-0.5);
-*/
             r.DrawBuffer(out_buffer_c,NULL,3,36);
             r.DrawBuffer(out_buffer_ccc,NULL,3,36);
 
