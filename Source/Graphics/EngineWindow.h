@@ -20,7 +20,6 @@ public:
     SDL_Window *GetWindow() const;
     SDL_Surface *GetSurface() const;
     byte *GetBackBuffer() const;
-    float *GetZBuffer() const;
     int GetBpp() const;
     void Swap();
 
@@ -35,10 +34,6 @@ private:
     SDL_Surface* mSurface;
 
     byte* mBackBuffer;
-    float* mZBuffer;
-
-
-
 
 };
 

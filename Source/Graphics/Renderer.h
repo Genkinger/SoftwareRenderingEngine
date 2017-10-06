@@ -20,6 +20,7 @@ enum class RenderMode{
 class Renderer {
 public:
     Renderer(EngineWindow *window);
+    ~Renderer();
     void Begin(RenderMode mode);
     void End();
     void Vertex2(float x, float y);
@@ -27,6 +28,7 @@ public:
     void Color3(float r, float g, float b);
     void Clear(float r, float g, float b);
     void DrawBuffer(float* buffer,float* colorBuffer,int cpe, int ecount);
+    void TriangleFilled(Vec2f a_norm, Vec2f b_norm,Vec2f c_norm);
 private:
     void Lines();
     void Line(Vec2f a_norm, Vec2f b_norm,int aCol, int bCol);
@@ -40,6 +42,9 @@ private:
     std::vector<uint> mColors;
     EngineWindow *mWindow;
     RenderMode mRenderMode;
+    std::vector<Vec2f> mLeft;
+    std::vector<Vec2f> mRight;
+    int* mScanBuffer;
 
 };
 

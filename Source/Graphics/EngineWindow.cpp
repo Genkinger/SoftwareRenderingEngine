@@ -25,10 +25,6 @@ byte *EngineWindow::GetBackBuffer() const {
     return mBackBuffer;
 }
 
-float *EngineWindow::GetZBuffer() const {
-    return mZBuffer;
-}
-
 int EngineWindow::GetBpp() const {
     return mBpp;
 }
@@ -47,20 +43,21 @@ EngineWindow::EngineWindow(const std::string &title, int width, int height,int b
     assert(mSurface);
 
     mBackBuffer = new byte[mWidth * mHeight * 4];
-    mZBuffer = new float[mWidth * mHeight];
 
 }
 
+
 EngineWindow::~EngineWindow() {
-    delete[] mZBuffer;
     delete[] mBackBuffer;
 }
 
 void EngineWindow::Swap() {
     SDL_LockSurface(mSurface);
-    for (int i = 0; i < mWidth * mHeight; ++i) {
-        ((int*)mSurface->pixels)[i] = ((int*)mBackBuffer)[i];
-    }
+
+    byte* tmp = (byte*)mSurface->pixels;
+    mSurface->pixels = mBackBuffer;
+    mBackBuffer = tmp;
+
     SDL_UnlockSurface(mSurface);
     SDL_UpdateWindowSurface(mWindow);
 }

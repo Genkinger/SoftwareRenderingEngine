@@ -9,7 +9,15 @@
 Renderer::Renderer(EngineWindow *window)
 : mWindow(window)
 {
+    mScanBuffer = new int[2 * mWindow->GetHeight()];
+    for(int i = 0; i < mWindow->GetHeight();i++) {
+        mScanBuffer[i*2] = mWindow->GetWidth();
+        mScanBuffer[i*2 + 1] = 0;
+    }
+}
 
+Renderer::~Renderer(){
+    delete[] mScanBuffer;
 }
 
 void Renderer::Begin(RenderMode mode) {
@@ -87,8 +95,7 @@ void Renderer::Lines() {
     Vec4f aCol = unpack_color(mColors[0]);
 
     for (int i = 1; i < mPoints.size(); ++i) {
-        Vec2f b =  Vec2f {floorf(Map(mPoints[i][0], -1, 1, 0, mWindow->GetWidth())),
-                         floorf(Map(mPoints[i][1], 1, -1, 0, mWindow->GetHeight()))};
+        Vec2f b =  {floorf(Map(mPoints[i][0], -1, 1, 0, mWindow->GetWidth())), floorf(Map(mPoints[i][1], 1, -1, 0, mWindow->GetHeight()))};
 
         Vec2f dir = b - a;
         Vec2f dir_n = dir.Normalize_Copy();
@@ -133,7 +140,7 @@ void Renderer::Points() {
 }
 
 bool Renderer::FloatEquals(float a, float b) {
-     return !(abs(a-b) > 0.5);
+     return abs(a-b) <= 0.5;
 }
 
 void Renderer::Line(Vec2f a_norm, Vec2f b_norm, int aCol, int bCol) {
@@ -180,6 +187,45 @@ void Renderer::Line(Vec2f a_norm, Vec2f b_norm, int aCol, int bCol) {
         reinterpret_cast<uint*>(mWindow->GetBackBuffer())[x + y * mWindow->GetWidth()] = rgb_float(currentColor[0],currentColor[1],currentColor[2]);
         currentColor = currentColor + factor;
     }
+
+}
+
+void Renderer::TriangleFilled(Vec2f a_norm, Vec2f b_norm, Vec2f c_norm){
+    Vec2f a = Vec2f{(floorf(Map(a_norm[0],-1,1,0,mWindow->GetWidth()))),
+                    (floorf(Map(a_norm[1],1,-1,0,mWindow->GetHeight())))};
+
+    Vec2f b = Vec2f{(floorf(Map(b_norm[0],-1,1,0,mWindow->GetWidth()))),
+                    (floorf(Map(b_norm[1],1,-1,0,mWindow->GetHeight())))};
+
+    Vec2f c = Vec2f{(floorf(Map(c_norm[0],-1,1,0,mWindow->GetWidth()))),
+                    (floorf(Map(c_norm[1],1,-1,0,mWindow->GetHeight())))};
+
+
+    if(a[1] > b[1]){
+        Vec2f tmp = a;
+        a = b;
+        b = tmp;
+    }
+    if(a[1] > c[1]){
+        Vec2f tmp = a;
+        a = c;
+        c = tmp;
+    }
+    if(b[1] > c[1]){
+        Vec2f tmp = b;
+        b = c;
+        c = tmp;
+    }
+
+    Vec2f ab = b - a;
+    Vec2f ac = c - a;
+    Vec2f bc = c - b;
+
+
+    Vec2f dirAC = ac / ac[1];
+    Vec2f dirAB = ab / ab[1];
+    Vec2f dirBC = bc / bc[1];
+
 
 }
 
