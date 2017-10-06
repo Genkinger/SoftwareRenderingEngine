@@ -64,10 +64,10 @@ void SoftwareRenderer::DrawBuffer(float *vertices, int *indices, int components,
 
 }
 
+
 Vec4f SoftwareRenderer::NormalizedToScreen(const Vec4f &normalized, const Vec2f &dimension) {
     return {Map(normalized[0],-1,1,0,dimension[0]-1),Map(-normalized[1],-1,1,0,dimension[1]-1),normalized[2],normalized[3]};
 }
-
 void SoftwareRenderer::Clear(const SubWindow &win, Vec3f col){
     int cnt = mWindow->GetHeight() * mWindow->GetWidth();
     uint* pixels = reinterpret_cast<uint*>(mWindow->GetBackBuffer());
@@ -89,21 +89,20 @@ void SoftwareRenderer::Clear(const SubWindow &win, Vec3f col){
     }
 
 }
-
 void SoftwareRenderer::SetModelView(const Mat4f &matrix) {
     mModelView = matrix;
 }
-
 void SoftwareRenderer::SetProjection(const Mat4f &matrix) {
     mProjection = matrix;
 }
-
 Vec4f SoftwareRenderer::ApplyMatricesToVertex(const Vec4f &vertex) {
     Vec4f result = mProjection * mModelView * vertex;
-    result[0] = result[0]/result[3];
-    result[1] = result[1]/result[3];
-    result[2] = result[2]/result[3];
-    result[3] = result[3]/result[3];
+    if(result[3] != 0) {
+        result[0] = result[0] / result[3];
+        result[1] = result[1] / result[3];
+        result[2] = result[2] / result[3];
+        result[3] = result[3] / result[3];
+    }
     return result;
 }
 
